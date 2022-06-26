@@ -30,21 +30,17 @@ function factory() {
                         state.count += 1
                     }
                 }
+            },
+            stubs: {
+                Fetcher: {
+                    template: true
+                }
             }
         }
     })
 }
 
-let mockGet = jest.fn();
-
-jest.mock('axios', () => ({
-    get: () => mockGet()
-}))
-
 describe('App', () => {
-    beforeEach(() => {
-        mockGet = jest.fn();
-    })
 
     it('render count when odd', async () => {
         const wrapper = factory()
@@ -57,10 +53,5 @@ describe('App', () => {
         await wrapper.find('button').trigger('click')
         await wrapper.find('button').trigger('click')
         expect(wrapper.html()).toContain('Count: 2. Count is even')
-    })
-
-    it('makes an API call', async () => {
-        const wrapper = factory()
-        expect(mockGet).toHaveBeenCalledTimes(1);
     })
 });
