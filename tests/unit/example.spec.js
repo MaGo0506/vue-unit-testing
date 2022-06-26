@@ -1,12 +1,19 @@
 import {mount} from '@vue/test-utils'
+import { nextTick } from "vue";
 
 const App = {
-    props: {
-        count: {
-            type: Number,
+    data() {
+        return {
+            count: 0
+        }
+    },
+    methods: {
+        increment() {
+            this.count += 1
         }
     },
     template: `
+      <button @click="increment">Increment</button>
       <div v-if="count % 2 === 0">
       Count: {{ count }}. Count is even.
       </div>
@@ -17,21 +24,28 @@ const App = {
     `
 }
 
-function factory(props) {
+function factory({data} = { data: {} }) {
     return mount(App, {
-        props
+        data() {
+            return data;
+        }
     })
 }
 
 describe('App', () => {
-    it('render count when odd', () => {
-        const wrapper = factory({ count: 1 })
-        console.log(wrapper.html())
+    it('render count when odd', async () => {
+        const wrapper = factory()
+        await wrapper.find('button').trigger('click')
+        await nextTick()
         expect(wrapper.html()).toContain('Count: 1. Count is odd')
     })
 
     it('render count when even', () => {
-        const wrapper = factory({ count: 2 })
+        const wrapper = factory({
+            data: {
+                count: 2
+            }
+        })
         console.log(wrapper.html())
         expect(wrapper.html()).toContain('Count: 2. Count is even')
     })
