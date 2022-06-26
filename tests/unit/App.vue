@@ -10,13 +10,13 @@
 </template>
 
 <script>
-import {computed} from "vue";
+import {computed, inject} from "vue";
 import {useStore} from 'vuex';
 
 export default {
   name: "App.vue",
   setup() {
-    const store = useStore(),
+    const store = inject('store'),
         count = computed(() => store.state.count)
 
     const increment = () => {
